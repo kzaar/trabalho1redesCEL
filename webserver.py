@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import cgitb
 import cgi
+import socket
 cgitb.enable()
 form = cgi.FieldStorage()
 
@@ -40,6 +41,15 @@ m3 = [form.getvalue('maq3_ps'),
 	form.getvalue('maq3-finger'),
 	form.getvalue('maq3_uptime'),
 	form.getvalue('maq3-uptime')]
+
+DAEMONIP = 127.0.0.1
+DAEMON1 = (DAEMONIP, 9001)
+DAEMON2 = (DAEMONIP, 9002)
+DAEMON3 = (DAEMONIP, 9003)
+
+#conexao sequencial
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect(DAEMON1)
 
 print "Content-Type: text/html\n"
 print "M1: %s" % m1[0]

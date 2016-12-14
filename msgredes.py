@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 def mkmsg(prot, opt):
 	version = 2
 	
