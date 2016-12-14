@@ -1,5 +1,5 @@
 # trabalho1redes
 Alunos: 
   César Abreu de Andrade
-  Eduardo Marinho
+  Eduardo Augusto Marinho
   Lucas da Costa Martins Silva
