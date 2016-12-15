@@ -51,15 +51,15 @@ DAEMON2 = (DAEMONIP, 9002)
 DAEMON3 = (DAEMONIP, 9003)
 
 #conexao sequencial
+#conectando com DAEMON1
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#s.connect(DAEMON1)
+s.connect(DAEMON1)
 
 #mensagens para a maquina 1
 for i in range(len(m1))[::2]:
 	if m1[i] != None:
 		msg = mkmsg(m1[i],m1[i+1])
-		print(msg)
-		#envia a msg, aguarda a resposta e imprime
+		s.send(msg)
 	
 #fazer para as outra maquinas, ou colocar todas em uma matriz 
 #e fazer todas em um for

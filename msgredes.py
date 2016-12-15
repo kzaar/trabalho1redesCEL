@@ -1,6 +1,22 @@
 #!/usr/bin/env python
 
-def chksum():
+import sys
+
+VERSION_INDEX = 0
+IHL_INDEX = 4
+TOS_INDEX = 8
+TOTALLENGHT_INDEX = 16
+ID_INDEX = 32
+FLAGS_INDEX = 48 
+FRAGMENTOFFSET_INDEX = 51
+TIMETOLIVE_INDEX = 64
+PROTOCOL_INDEX = 72
+HEADERCHECKSUM_INDEX = 80
+SOURCEADDR_INDEX = 96
+DESTADDR_INDEX = 128
+OPTION_INDEX = 160
+
+def chksum(): #TODO
 	
 	return
 
@@ -15,6 +31,7 @@ def mkmsg(prot, opt=None):
 
 	global mopt
 	mopt = ""
+
 	#IHL
 	#numero de WORDs 32-bit
 	#minimo = 5 (5x32 = 160bits) (sem options)
@@ -78,11 +95,18 @@ def mkmsg(prot, opt=None):
 		a = ''
 		msg = msg + a.zfill(pad)
 	
-	#crc #16bits
-	crcindex = 79
+	#crc #16bits TODO
+	crc = ''.zfill(16)
+	msg = msg[:79] +  crc + msg[79:]
 
-	#bin to bytes
-	n = int(msg, 2)
-	data = bytes([n])	
+	#bin to bytes  #TODO corrigir
+	n = int(msg, 2) ## arrumar isso, msg>>sizeof(int), precisa splitar o msg
+			## e concatenar os bytes  (int tem 4 bytes) 
+	data = bytes([n]) 	
 
 	return data
+
+def openmsg(data):
+	##fazer o reverso, slitar os bytes, trasnformar em int e formatar em bin
+	
+	
