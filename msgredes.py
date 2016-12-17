@@ -14,11 +14,17 @@ PROTOCOL_INDEX = 72
 HEADERCHECKSUM_INDEX = 80
 SOURCEADDR_INDEX = 96
 DESTADDR_INDEX = 128
-OPTION_INDEX = 160
+OPTIONS_INDEX = 160
 
-def chksum(): #TODO
+MSG_LENGHT = 'MSG_LENGHT'
+MSG_ID = 'MSG_ID'
+MSG_PROTOCOL = 'MSG_PROTOCOL'
+MSG_SOURCE = 'MSG_SOURCE'
+MSG_OPTIONS = 'MSG_OPTION'
+
+def chksum(a): #TODO
 	
-	return
+	return 1
 
 def tonbits (a , nbits) :
 	aux = "{0:b}".format(a)
@@ -99,14 +105,49 @@ def mkmsg(prot, opt=None):
 	crc = ''.zfill(16)
 	msg = msg[:79] +  crc + msg[79:]
 
-	#bin to bytes  #TODO corrigir
-	n = int(msg, 2) ## arrumar isso, msg>>sizeof(int), precisa splitar o msg
-			## e concatenar os bytes  (int tem 4 bytes) 
-	data = bytes([n]) 	
-
+	#bin to bytes 
+	n = int(msg, 2)
+ 
+	data = bytes(n) 
+	
 	return data
 
 def openmsg(data):
-	##fazer o reverso, slitar os bytes, trasnformar em int e formatar em bin
 	
-	
+	n = int(data)
+	msg = "{0:b}".format(n)
+	msg = "00" + msg # 2 zeros a esquerda sao perdidos nas conversoes
+	if len(msg) % 32:
+		print "a"
+		return 0
+	elif int(msg[VERSION_INDEX:IHL_INDEX],2) != 2:
+		print "b"
+		return 0
+	elif int(msg[TIMETOLIVE_INDEX:PROTOCOL_INDEX],2) < 1:
+		print "c"
+		return 0
+	elif int(msg[TOS_INDEX:TOTALLENGHT_INDEX],2) != 0:
+		print "d"
+		return 0
+	elif not chksum(int(msg[HEADERCHECKSUM_INDEX:SOURCEADDR_INDEX],2)):
+		return -1
+
+	lenght = int(msg[IHL_INDEX:TOS_INDEX],2)*32
+	idmsg = int(msg[ID_INDEX:FLAGS_INDEX],2)
+	protocol = int(msg[PROTOCOL_INDEX:HEADERCHECKSUM_INDEX],2)
+	sourceaddr = str(int(msg[SOURCEADDR_INDEX:DESTADDR_INDEX-24],2))
+	sourceaddr = sourceaddr + '.' + str(int(msg[SOURCEADDR_INDEX+8:DESTADDR_INDEX-16],2))
+	sourceaddr = sourceaddr + '.' + str(int(msg[SOURCEADDR_INDEX+16:DESTADDR_INDEX-8],2))
+	sourceaddr = sourceaddr + '.' + str(int(msg[SOURCEADDR_INDEX+24:DESTADDR_INDEX],2))
+	options = ""
+	if lenght > 160:
+		for i in range(OPTIONS_INDEX, lenght -16 , 16):
+			options = options + chr(int(msg[i:i+16],2))	
+	else:
+		options = 0
+	datarr = { MSG_LENGHT:lenght, MSG_ID:idmsg,
+		MSG_PROTOCOL:protocol, MSG_SOURCE:sourceaddr,
+		MSG_OPTIONS:options}
+	return datarr
+
+print openmsg(mkmsg("finger","-a -c"))
