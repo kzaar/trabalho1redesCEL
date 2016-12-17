@@ -149,5 +149,3 @@ def openmsg(data):
 		MSG_PROTOCOL:protocol, MSG_SOURCE:sourceaddr,
 		MSG_OPTIONS:options}
 	return datarr
-
-print openmsg(mkmsg("finger","-a -c"))
