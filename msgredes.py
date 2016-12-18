@@ -22,6 +22,15 @@ MSG_PROTOCOL = 'MSG_PROTOCOL'
 MSG_SOURCE = 'MSG_SOURCE'
 MSG_OPTIONS = 'MSG_OPTION'
 
+
+#protocol
+#1	ps
+#2	df
+#3	finpger
+#4	uptime
+PROTOCOL_DICT = {'ps':1, 'df':2, 'finger':3, 'uptime':4}
+PROTOCOL_COMMAND = [0 ,"ps","df","finger","uptime"]
+
 def chksum(a): #TODO
 	
 	return 1
@@ -49,7 +58,8 @@ def mkmsg(prot, opt=None):
 		if IHL > 15:
 			IHL = 15
 		for c in opt:
-			mopt = mopt + tonbits(ord(c), 16)			
+			mopt = mopt + tonbits(ord(c), 16)
+					
 	msg = msg + tonbits(IHL, 4)
 
 	typeofversion = 0 #8bits
@@ -71,13 +81,8 @@ def mkmsg(prot, opt=None):
 	timetolive = 64 #8bits
 	msg = msg + tonbits(timetolive, 8)
 
-	#protocol
-	#1	ps
-	#2	df
-	#3	finpger
-	#4	uptime
-	pdict = {'ps':1, 'df':2, 'finger':3, 'uptime':4}
-	protocol = pdict.get(prot) #8bits
+#protocol
+	protocol = PROTOCOL_DICT.get(prot) #8bits
 	msg = msg + tonbits(protocol, 8)
 
 	#srcaddr 127.0.0.1 32bits
@@ -103,7 +108,7 @@ def mkmsg(prot, opt=None):
 	
 	#crc #16bits TODO
 	crc = ''.zfill(16)
-	msg = msg[:79] +  crc + msg[79:]
+	msg = msg[:80] +  crc + msg[80:]
 
 	#bin to bytes 
 	n = int(msg, 2)
@@ -141,11 +146,12 @@ def openmsg(data):
 	sourceaddr = sourceaddr + '.' + str(int(msg[SOURCEADDR_INDEX+24:DESTADDR_INDEX],2))
 	options = ""
 	if lenght > 160:
-		for i in range(OPTIONS_INDEX, lenght -16 , 16):
+		for i in range(OPTIONS_INDEX, lenght, 16):
 			options = options + chr(int(msg[i:i+16],2))	
 	else:
-		options = 0
+		options = ""
 	datarr = { MSG_LENGHT:lenght, MSG_ID:idmsg,
 		MSG_PROTOCOL:protocol, MSG_SOURCE:sourceaddr,
 		MSG_OPTIONS:options}
 	return datarr
+

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import socket, sys, getopt
+import msgredes
+import subprocess
 from thread import *
 argv = sys.argv[1:]
 if len(argv) != 2:
@@ -21,14 +23,30 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
 	s.bind((HOST, PORT))
 except socket.error:
-	print PORT + " erro ao vincular a porta"
+	print str(PORT) + " erro ao vincular a porta"
 	sys.exit(2)
 
 s.listen(10)
-print PORT + 'socket listening'
+print str(PORT) + 'socket listening'
 
-def rundata(data):
-	#TODO
+def rundata(data, con):
+	msg = msgredes.openmsg(data)
+	protocol = msg[msgredes.MSG_PROTOCOL]
+	protocol = msgredes.PROTOCOL_COMMAND[protocol]
+	options = msg[msgredes.MSG_OPTIONS]
+	command = protocol + " " + options
+	shellc = [protocol]
+	options = options.replace("\x00", "").replace("|","").replace(";","").replace(">","").replace("<","")
+	shellc.extend(options.split())
+	try:
+		output = subprocess.check_output(shellc)
+		output = output + "\n" + "return code = 0"
+	except subprocess.CalledProcessError as e:
+		output = "return code = " + str(e.returncode)	
+	
+	header = "shell command: :" + command + "\n"
+	output = header + output
+	con.send(output)
 	return
 
 def clientthread(con):
@@ -38,14 +56,15 @@ def clientthread(con):
 		if not data:
 			break
 		else:
-			rundata(data)	
+			rundata(data, con)
+				
 	
 	con.close()
 
 while 1:
 	
 	con, addr = s.accept()
-	print PORT + 'conectado'
+	print str(PORT) + 'conectado'
 	start_new_thread(clientthread, (con,))
 
 s.close()

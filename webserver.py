@@ -53,14 +53,56 @@ DAEMON3 = (DAEMONIP, 9003)
 #conexao sequencial
 #conectando com DAEMON1
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.settimeout(10)
 s.connect(DAEMON1)
-
+connected = False
 #mensagens para a maquina 1
 for i in range(len(m1))[::2]:
 	if m1[i] != None:
+		if not connected:
+			s.connect(DAEMON1)
+			connected = True
+			print "<h2>Machine 1</h2>"
 		msg = mkmsg(m1[i],m1[i+1])
 		s.send(msg)
-	
-#fazer para as outra maquinas, ou colocar todas em uma matriz 
-#e fazer todas em um for
+		a = s.recv(1024)
+		for line in a.splitlines():
+			print "<pre>" + line + "</pre>"
+if connected:
+	s.close()
+	connected = False
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.settimeout(10)
 
+#mensagens para a maquina 2
+for i in range(len(m2))[::2]:
+	if m2[i] != None:
+		if not connected:
+			s.connect(DAEMON2)
+			connected = True
+			print "<h2>Machine 2</h2>"
+		msg = mkmsg(m2[i],m2[i+1])
+		s.send(msg)
+		a = s.recv(1024)
+		for line in a.splitlines():
+			print "<pre>" + line + "</pre>"
+if connected:
+	s.close()
+	connected = False
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.settimeout(10)
+
+#mensagens para a maquina 3
+for i in range(len(m3))[::2]:
+	if m3[i] != None:
+		if not connected:
+			s.connect(DAEMON3)
+			connected = True
+			print "<h2>Machine 3</h2>"
+		msg = mkmsg(m3[i],m3[i+1])
+		s.send(msg)
+		a = s.recv(1024)
+		for line in a.splitlines():
+			print "<pre>" + line + "</pre>"
+if connected:
+	s.close()
