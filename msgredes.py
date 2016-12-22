@@ -31,9 +31,23 @@ MSG_OPTIONS = 'MSG_OPTION'
 PROTOCOL_DICT = {'ps':1, 'df':2, 'finger':3, 'uptime':4}
 PROTOCOL_COMMAND = [0 ,"ps","df","finger","uptime"]
 
-def chksum(a): #TODO
+def chksum(a, validate=0): #TODO
 	
-	return 1
+	if validate:
+		msg_velha = a[0:HEADERCHECKSUM_INDEX] + a[HEADERCHECKSUM_INDEX+16:]
+		chksum_velho = a[HEADERCHECKSUM_INDEX:HEADERCHECKSUM_INDEX+16]
+		return chksum_velho == chksum(msg_velha)
+	else:
+	
+		crc = 0xFFFF
+
+		for i in range(0, len(a)):
+			tmp = (crc >> 8) ^ ord(a[i])
+			tmp ^= tmp >> 4
+			crc = (crc << 8) ^ (tmp << 12) ^ (tmp << 5) ^ tmp
+			crc &= 0xFFFF
+
+		return bin(crc)
 
 def tonbits (a , nbits) :
 	aux = "{0:b}".format(a)
@@ -107,7 +121,7 @@ def mkmsg(prot, opt=None):
 		msg = msg + a.zfill(pad)
 	
 	#crc #16bits TODO
-	crc = ''.zfill(16)
+	crc = chksum(msg)
 	msg = msg[:80] +  crc + msg[80:]
 
 	#bin to bytes 
@@ -134,7 +148,7 @@ def openmsg(data):
 	elif int(msg[TOS_INDEX:TOTALLENGHT_INDEX],2) != 0:
 		print "d"
 		return 0
-	elif not chksum(int(msg[HEADERCHECKSUM_INDEX:SOURCEADDR_INDEX],2)):
+	elif not chksum(msg, 1):
 		return -1
 
 	lenght = int(msg[IHL_INDEX:TOS_INDEX],2)*32
