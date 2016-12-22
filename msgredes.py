@@ -47,7 +47,7 @@ def chksum(a, validate=0): #TODO
 			crc = (crc << 8) ^ (tmp << 12) ^ (tmp << 5) ^ tmp
 			crc &= 0xFFFF
 
-		return bin(crc)
+		return tonbits(crc,16)
 
 def tonbits (a , nbits) :
 	aux = "{0:b}".format(a)

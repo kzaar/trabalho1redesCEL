@@ -31,6 +31,12 @@ print str(PORT) + 'socket listening'
 
 def rundata(data, con):
 	msg = msgredes.openmsg(data)
+	if msg == 0:
+		con.send("Erro no protocolo de camada interna")
+		return
+	elif msg == -1:
+		con.send("Erro ao validar CRC16, tente novamente.")
+		return
 	protocol = msg[msgredes.MSG_PROTOCOL]
 	protocol = msgredes.PROTOCOL_COMMAND[protocol]
 	options = msg[msgredes.MSG_OPTIONS]
