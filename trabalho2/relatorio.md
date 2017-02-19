@@ -281,7 +281,7 @@ r2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h8-1 h8-2 h9-1 h9-2 r1
 *** Results: 0% dropped (132/132 received) 
 ```
 
-  No primeiro comando ´´´pingall´´´ o router r1 ainda não havia recebido o routing table de r2.
+  No primeiro comando `<pingall>` o router r1 ainda não havia recebido o routing table de r2.
   
   Router1>sh ip route
   
