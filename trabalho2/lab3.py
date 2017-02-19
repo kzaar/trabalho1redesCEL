@@ -19,8 +19,8 @@ class Lab3Topo(Topo):
 		super(Lab3Topo,self).__init__()
 		r1 = self.addNode('r1', cls=Router, ip='176.16.100.1/24',
 			defaultRoute='via 176.16.100.254')
-		r2 = self.addNode('r2', cls=Router, ip='176.16.100.2/24',
-			defaultRoute='via 176.16.100.254')
+		r2 = self.addNode('r2', cls=Router, ip='176.16.100.2/24')
+		
 		r3 = self.addNode('r3', cls=Router, ip='176.16.200.1/24',
 			defaultRoute='via 176.16.200.254')		
 
@@ -97,6 +97,9 @@ def run():
 	r1.waitOutput()
 
 	r2= net.getNodeByName('r2')
+	r2.cmd("ifconfig r2-eth1 176.16.200.2 netmask 255.255.255.0")
+	r2.cmd("route add default gw 176.16.200.254 r2-eth1")
+	r2.cmd("route add default gw 176.16.100.254 r2-eth0")
 	print "Starting zebra on r2"
 	r2.cmd("sudo /usr/lib/quagga/zebra -f /etc/quagga/conf/zebra-lab3-r2.conf -d -i /tmp/zebra-r2.pid > logs/lab2-zebra-r2-stdout 2>&1")
 	r2.waitOutput()
