@@ -443,4 +443,43 @@ if __name__ == '__main__':
   output:
   
 ```
+*** Creating network
+*** Adding controller
+*** Adding hosts:
+h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+*** Adding switches:
+s1 s2 s3 s4 s5 s6 
+*** Adding links:
+(h1-1, s1) (h1-2, s1) (h2-1, s2) (h2-2, s2) (h3-1, s3) (h3-2, s3) (h4-1, s4) (h4-2, s4) (h5-1, s5) (h5-2, s5) (h6-1, s6) (h6-2, s6) (r1, r2) (r2, r3) (s1, r1) (s2, r1) (s3, r2) (s4, r2) (s5, r3) (s6, r3) 
+*** Configuring hosts
+h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+*** Starting controller
+c0 
+*** Starting 6 switches
+s1 s2 s3 s4 s5 s6 ...
+Starting zebra on r1
+Starting OSPF on r1
+Starting zebra on r2
+Starting OSPF on r2
+Starting zebra on r3
+Starting OSPF on r3
+*** Starting CLI:
+mininet> pingall
+*** Ping: testing ping reachability
+h1-1 -> h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
+h1-2 -> h1-1 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
+h2-1 -> h1-1 h1-2 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
+h2-2 -> h1-1 h1-2 h2-1 h3-1 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
+h3-1 -> h1-1 h1-2 h2-1 h2-2 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
+h3-2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h4-1 h4-2 X X X X r1 r2 r3 
+h4-1 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-2 X X X X r1 r2 r3 
+h4-2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 X X X X r1 r2 r3 
+h5-1 -> X X X X X X X X h5-2 h6-1 h6-2 X X r3 
+h5-2 -> X X X X X X X X h5-1 h6-1 h6-2 X X r3 
+h6-1 -> X X X X X X X X h5-1 h5-2 h6-2 X X r3 
+h6-2 -> X X X X X X X X h5-1 h5-2 h6-1 X X r3 
+r1 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r2 r3 
+r2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r1 r3 
+r3 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 
+*** Results: 38% dropped (130/210 received) 
 ```
