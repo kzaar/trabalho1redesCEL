@@ -285,7 +285,7 @@ r2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h8-1 h8-2 h9-1 h9-2 r1
   
   Router1>sh ip route
   
-  ´´´
+  ```
   Router1> sh ip route
 Codes: K - kernel route, C - connected, S - static, R - RIP,
        O - OSPF, I - IS-IS, B - BGP, A - Babel,
@@ -302,14 +302,14 @@ O   192.168.3.0/24 [110/10] is directly connected, r1-eth3, 00:00:52
 C>* 192.168.3.0/24 is directly connected, r1-eth3
 O>* 192.168.8.0/24 [110/20] via 192.168.0.250, r1-eth0, 00:00:02
 O>* 192.168.9.0/24 [110/20] via 192.168.0.250, r1-eth0, 00:00:02
-´´´
+```
   
  
  ## Lab3:
  
  lab3.py:
  
- ´´´python
+ ```python
  
 #!/usr/bin/python
 
@@ -438,9 +438,9 @@ def run():
 if __name__ == '__main__':
 	setLogLevel('info')
 	run()
-´´´
+```
   
   output:
   
-´´´
-´´´
+```
+```
