@@ -485,7 +485,7 @@ r2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r3
 r3 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 
 *** Results: 0% dropped (210/210 received) 
 ```
-	No zebra de R2, tem-se:
+No zebra de R2:
 	
 ```
 Router-r2> sh ip route
