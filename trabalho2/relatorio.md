@@ -331,8 +331,8 @@ class Lab3Topo(Topo):
 		super(Lab3Topo,self).__init__()
 		r1 = self.addNode('r1', cls=Router, ip='176.16.100.1/24',
 			defaultRoute='via 176.16.100.254')
-		r2 = self.addNode('r2', cls=Router, ip='176.16.100.2/24',
-			defaultRoute='via 176.16.100.254')
+		r2 = self.addNode('r2', cls=Router, ip='176.16.100.2/24')
+		
 		r3 = self.addNode('r3', cls=Router, ip='176.16.200.1/24',
 			defaultRoute='via 176.16.200.254')		
 
@@ -363,8 +363,7 @@ class Lab3Topo(Topo):
 
 
 		s1 = self.addSwitch('s1')
-
-s2 = self.addSwitch('s2')
+		s2 = self.addSwitch('s2')
 		s3 = self.addSwitch('s3')
 		s4 = self.addSwitch('s4')
 		s5 = self.addSwitch('s5')
@@ -410,6 +409,9 @@ def run():
 	r1.waitOutput()
 
 	r2= net.getNodeByName('r2')
+	r2.cmd("ifconfig r2-eth1 176.16.200.2 netmask 255.255.255.0")
+	r2.cmd("route add default gw 176.16.200.254 r2-eth1")
+	r2.cmd("route add default gw 176.16.100.254 r2-eth0")
 	print "Starting zebra on r2"
 	r2.cmd("sudo /usr/lib/quagga/zebra -f /etc/quagga/conf/zebra-lab3-r2.conf -d -i /tmp/zebra-r2.pid > logs/lab2-zebra-r2-stdout 2>&1")
 	r2.waitOutput()
@@ -466,20 +468,43 @@ Starting OSPF on r3
 *** Starting CLI:
 mininet> pingall
 *** Ping: testing ping reachability
-h1-1 -> h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
-h1-2 -> h1-1 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
-h2-1 -> h1-1 h1-2 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
-h2-2 -> h1-1 h1-2 h2-1 h3-1 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
-h3-1 -> h1-1 h1-2 h2-1 h2-2 h3-2 h4-1 h4-2 X X X X r1 r2 r3 
-h3-2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h4-1 h4-2 X X X X r1 r2 r3 
-h4-1 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-2 X X X X r1 r2 r3 
-h4-2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 X X X X r1 r2 r3 
-h5-1 -> X X X X X X X X h5-2 h6-1 h6-2 X X r3 
-h5-2 -> X X X X X X X X h5-1 h6-1 h6-2 X X r3 
-h6-1 -> X X X X X X X X h5-1 h5-2 h6-2 X X r3 
-h6-2 -> X X X X X X X X h5-1 h5-2 h6-1 X X r3 
-r1 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r2 r3 
-r2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 X X X X r1 r3 
+h1-1 -> h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+h1-2 -> h1-1 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+h2-1 -> h1-1 h1-2 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+h2-2 -> h1-1 h1-2 h2-1 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+h3-1 -> h1-1 h1-2 h2-1 h2-2 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+h3-2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+h4-1 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+h4-2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h5-1 h5-2 h6-1 h6-2 r1 r2 r3 
+h5-1 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-2 h6-1 h6-2 r1 r2 r3 
+h5-2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h6-1 h6-2 r1 r2 r3 
+h6-1 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-2 r1 r2 r3 
+h6-2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 r1 r2 r3 
+r1 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r2 r3 
+r2 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r3 
 r3 -> h1-1 h1-2 h2-1 h2-2 h3-1 h3-2 h4-1 h4-2 h5-1 h5-2 h6-1 h6-2 r1 r2 
-*** Results: 38% dropped (130/210 received) 
+*** Results: 0% dropped (210/210 received) 
+```
+	No zebra de R2, tem-se:
+	
+```
+Router-r2> sh ip route
+Codes: K - kernel route, C - connected, S - static, R - RIP,
+       O - OSPF, I - IS-IS, B - BGP, A - Babel,
+       > - selected route, * - FIB route
+
+K>* 0.0.0.0/0 via 176.16.200.254, r2-eth1
+C>* 127.0.0.0/8 is directly connected, lo
+O>* 176.16.10.0/24 [110/20] via 176.16.100.1, r2-eth0, 00:10:45
+O>* 176.16.20.0/24 [110/20] via 176.16.100.1, r2-eth0, 00:10:45
+O   176.16.30.0/24 [110/10] is directly connected, r2-eth2, 00:11:35
+C>* 176.16.30.0/24 is directly connected, r2-eth2
+O   176.16.40.0/24 [110/10] is directly connected, r2-eth3, 00:11:35
+C>* 176.16.40.0/24 is directly connected, r2-eth3
+O>* 176.16.50.0/24 [110/20] via 176.16.200.1, r2-eth1, 00:10:50
+O>* 176.16.60.0/24 [110/20] via 176.16.200.1, r2-eth1, 00:10:50
+O   176.16.100.0/24 [110/10] is directly connected, r2-eth0, 00:11:35
+C>* 176.16.100.0/24 is directly connected, r2-eth0
+O   176.16.200.0/24 [110/10] is directly connected, r2-eth1, 00:11:35
+C>* 176.16.200.0/24 is directly connected, r2-eth1
 ```
